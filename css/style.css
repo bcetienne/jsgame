@@ -1,0 +1,93 @@
+body{
+    /*background: url("../imgs/dark-triangles.png") repeat;*/
+    background-image:linear-gradient(60deg, #EC2121, #BD1A77);
+    font-family: 'Poiret One', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1{
+    font-family: 'Audiowide', cursive;
+    /*color: #EC7D21;*/
+    color: #B37BF7;
+    font-size: 40px;
+}
+
+.optionScreen{
+    background-image:linear-gradient(60deg, #EC2121, #BD1A77);
+    width: 100vw;
+    height: 100vh;
+}
+
+.gameScreen{
+    background-color: transparent;
+    width: 70vw;
+    height: 70vh;
+}
+
+.hidden{
+    display: none!important;
+}
+
+.resetBtn{
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.alignLabel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexColumn{
+    display: flex;
+    flex-direction: column;
+}
+
+.labelSizeOption{
+    font-size: 25px;
+}
+
+input{
+    font-family: 'Poiret One', cursive;
+    font-size: 15px;
+    max-width: 35px;
+}
+
+.startGame{
+    font-family: 'Poiret One', cursive;
+    font-size: 15px;
+    height: auto;
+    width: auto;
+}
+
+.startGame:hover{
+    background-color: #800048;
+    border-radius: 5px;
+    /*color: #F59C52;*/
+    color: #B37BF7;
+}
+
+section[data-state="gameScreen"]{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.gameDiv{
+    height: 18px;
+    width: 18px;
+    border: 1px solid #7EABCE;
+
+}
+
