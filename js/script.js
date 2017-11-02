@@ -3,8 +3,7 @@ $(document).ready(function () {
     //TODO : Correct the problem of poor game board display.
 
     /**
-     * function init
-     * description : Checks whether there is an already existing game state in local storage
+     * Checks whether there is an already existing game state in local storage
      */
     function init() {
         // If there is no value in the local storage then the options screen is displayed.
@@ -21,8 +20,7 @@ $(document).ready(function () {
     }
 
     /**
-     * function insertObjects
-     * description : Displays and determines the locations of game elements such as player, enemies, obstacles,...
+     * Displays and determines the locations of game elements such as player, enemies, obstacles,...
      */
     function insertObjects() {
         // Player's basic position
@@ -61,8 +59,6 @@ $(document).ready(function () {
             //JSON file passed in string
             localStorage.setItem("enemyPos", JSON.stringify(posEnemy));
         }
-/*        var playerPos = JSON.parse(localStorage.getItem("playerPos"));
-        var goalPos = JSON.parse(localStorage.getItem("goalPos"));*/
         // Displays the character
         $(".gameDiv[data-x='" + posPlayer.x + "'][data-y='" + posPlayer.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
         // Displays the goal
@@ -92,9 +88,8 @@ $(document).ready(function () {
     }
 
     /**
-     * function movePlayer
-     * description : Defines the direction in which the character will move
-     * @param direction string
+     * Defines the direction in which the character will move
+     * @param {String} direction - Direction in the form of string
      */
     function movePlayer(direction){
         var currentPlayerPos = JSON.parse(localStorage.getItem('playerPos')),
@@ -147,8 +142,7 @@ $(document).ready(function () {
     }
 
     /**
-     * function moveEnemy
-     * description : Moves the enemy in a random direction
+     * Moves the enemy in a random directions
      */
     function moveEnemy() {
         var currentEnemyPos = JSON.parse(localStorage.getItem("enemyPos")),
@@ -161,7 +155,6 @@ $(document).ready(function () {
                     currentEnemyPos.randY -= 1;
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
-                    console.log("Enemy moves up");
                 }
             } else {
                 // Moves down
@@ -170,7 +163,6 @@ $(document).ready(function () {
                     currentEnemyPos.randY += 1;
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
-                    console.log("Enemy moves down");
                 }
             }
             } else {
@@ -181,7 +173,6 @@ $(document).ready(function () {
                     currentEnemyPos.randX += 1;
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
-                    console.log("Enemy moves right");
                 }
         } else {
                 // Moves left
@@ -190,16 +181,14 @@ $(document).ready(function () {
                     currentEnemyPos.randX -= 1;
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
-                    console.log("Enemy moves left");
                 }
             }
         }
     }
     
     /**
-     * function checkVictory
-     * description : Check if the player has reached the goal
-     * @param currentPlayerPos
+     * Check if the player has reached the goal
+     * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkVictory(currentPlayerPos) {
         var delay = 2500;
@@ -207,16 +196,14 @@ $(document).ready(function () {
             displayScreen("victoryScreen");
             // Returns to options screen after a while
             setTimeout(function () {
-                localStorage.clear();
-                location.reload();
+                eraseLocalStorage();
             }, delay);
         }
     }
 
     /**
-     * function checkDefeat
-     * description : Check if the player has arrived on the bad guy
-     * @param currentEnemyPos
+     * Check if the player has arrived on the bad guy
+     * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkDefeat(currentPlayerPos) {
         var delay = 2500;
@@ -224,15 +211,13 @@ $(document).ready(function () {
             displayScreen("defeatScreen");
             // Returns to options screen after a while
             setTimeout(function () {
-                localStorage.clear();
-                location.reload();
+                eraseLocalStorage();
             }, delay);
         }
     }
     
     /**
-     * function generateGame
-     * description :
+     * Generate the game and place the game elements
      */
     function generateGame() {
         // Retrieve x and y values
@@ -251,9 +236,8 @@ $(document).ready(function () {
     }
     
     /**
-     * function displayScreen
-     * description : Changes the class of an element to display it or not
-     * @param gameState string
+     * Changes the class of an element to display it or not
+     * @param {String} gameState - Window's state
      */
     function displayScreen(gameState) {
         $.each($("section[data-state!='" + gameState + "']"), function (key, value) {
@@ -263,25 +247,25 @@ $(document).ready(function () {
     }
 
     /**
-     * function getRandNumber
-     * description : Returns a random number by entering a minimum and maximum value in parameters
-     * @param max int
-     * @param min int
+     * Returns a random number by entering a minimum and maximum value in parameters
+     * @param {Number} max - The maximum of random numbers
+     * @param {Number} min - The minimum of random numbers
      * @returns {number}
      */
     function getRandNumber(max, min) {
         return Math.floor((Math.random() * max) + min)
     }
 
-    function checkPos(maxX, maxY) {
-        var flag = false;
-        while(!flag){
-        }
+    /**
+     * Erase local storage and reloads the page
+     */
+    function eraseLocalStorage() {
+        localStorage.clear();
+        location.reload();
     }
 
     /**
-     * anonymous function button startGame
-     * description : Retrieves the values of x and y by clicking on the startGame button and whether or not to start the game.
+     * Retrieves the values of x and y by clicking on the startGame button and whether or not to start the game.
      */
     $("button[data-action='startGame']").on("click", function () {
         var baseX = $("input[name='x']").val(),
@@ -309,12 +293,10 @@ $(document).ready(function () {
     });
 
     /**
-     * anonymous function button reset
-     * description : Emptying local storage
+     * Emptying local storage
      */
     $("button[data-action='reset']").on("click", function () {
-        localStorage.clear();
-        location.reload();
+        eraseLocalStorage();
     });
 
     init();
