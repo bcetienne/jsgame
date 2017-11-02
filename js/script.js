@@ -88,6 +88,25 @@ $(document).ready(function () {
     }
 
     /**
+     * Generate the game and place the game elements
+     */
+    function generateGame() {
+        // Retrieve x and y values
+        // JSON parse transforms a JSON text back to object JSON
+        var baseX = JSON.parse(localStorage.getItem("gameAxes")).x,
+            baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
+            gameScreen = $("section[data-state='gameScreen']"),
+            html = "<div style='width:" + (baseX * 20) + "px' class='gameContainer'>";
+        for (var y = 1; y <= baseX; y++) {
+            for (var x = 1; x <= baseY; x++) {
+                html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
+            }
+        }
+        $(gameScreen).html(html);
+        insertObjects();
+    }
+
+    /**
      * Defines the direction in which the character will move
      * @param {String} direction - Direction in the form of string
      */
@@ -99,6 +118,7 @@ $(document).ready(function () {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.y -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
+                checkDefeat(currentPlayerPos);
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
@@ -110,6 +130,7 @@ $(document).ready(function () {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.y += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
+                checkDefeat(currentPlayerPos);
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
@@ -121,6 +142,7 @@ $(document).ready(function () {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.x -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
+                checkDefeat(currentPlayerPos);
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
@@ -132,6 +154,7 @@ $(document).ready(function () {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.x += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
+                checkDefeat(currentPlayerPos);
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
@@ -139,14 +162,18 @@ $(document).ready(function () {
                 console.warn("Aïe");
             }
         }
+        checkDefeat(currentPlayerPos);
+        moveEnemy();
+        checkDefeat(currentPlayerPos);
     }
 
     /**
-     * Moves the enemy in a random directions
+     * Moves the enemy in random directions
      */
     function moveEnemy() {
         var currentEnemyPos = JSON.parse(localStorage.getItem("enemyPos")),
             gameSize = JSON.parse(localStorage.getItem('gameAxes'));
+
         if (getRandNumber(2, 1) == 1) {
             if (getRandNumber(2, 1) == 1) {
                 // Moves up
@@ -214,25 +241,6 @@ $(document).ready(function () {
                 eraseLocalStorage();
             }, delay);
         }
-    }
-    
-    /**
-     * Generate the game and place the game elements
-     */
-    function generateGame() {
-        // Retrieve x and y values
-        // JSON parse transforms a JSON text back to object JSON
-        var baseX = JSON.parse(localStorage.getItem("gameAxes")).x,
-            baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
-            gameScreen = $("section[data-state='gameScreen']"),
-            html = "<div style='width:" + (baseX * 20) + "px' class='gameContainer'>";
-        for (var y = 1; y <= baseX; y++) {
-            for (var x = 1; x <= baseY; x++) {
-                html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
-            }
-        }
-        $(gameScreen).html(html);
-        insertObjects();
     }
     
     /**
