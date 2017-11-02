@@ -100,8 +100,8 @@ $(document).ready(function () {
                 currentPlayerPos.y -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
                 checkVictory(currentPlayerPos);
-                checkDefeat(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+                checkDefeat(currentPlayerPos);
             } else {
                 console.warn("Aïe");
             }
@@ -111,8 +111,8 @@ $(document).ready(function () {
                 currentPlayerPos.y += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
                 checkVictory(currentPlayerPos);
-                checkDefeat(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+                checkDefeat(currentPlayerPos);
             } else {
                 console.warn("Aïe");
             }
@@ -122,8 +122,8 @@ $(document).ready(function () {
                 currentPlayerPos.x -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
                 checkVictory(currentPlayerPos);
-                checkDefeat(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+                checkDefeat(currentPlayerPos);
             } else {
                 console.warn("Aïe");
             }
@@ -133,8 +133,8 @@ $(document).ready(function () {
                 currentPlayerPos.x += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
                 checkVictory(currentPlayerPos);
-                checkDefeat(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+                checkDefeat(currentPlayerPos);
             } else {
                 console.warn("Aïe");
             }
