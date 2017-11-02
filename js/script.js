@@ -46,8 +46,8 @@ $(document).ready(function () {
         if (localStorage.getItem("enemyPos") == null){
             // Defines the enemy's position randomly
             var posEnemy = {
-                "randX" : Math.floor((Math.random() * JSON.parse(localStorage.getItem("gameAxes")).x) + 1),
-                "randY" : Math.floor((Math.random() * JSON.parse(localStorage.getItem("gameAxes")).y) + 1)
+                "randX" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).x, 1),
+                "randY" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).y, 1)
             };
             // JSON file passed in string
             localStorage.setItem("enemyPos", JSON.stringify(posEnemy));
@@ -142,7 +142,7 @@ $(document).ready(function () {
      * description : Moves the enemy in a random direction
      * @param direction
      */
-    function moveEnemy(direction) {
+    /*function moveEnemy(direction) {
         var arrayDirection = {
             "up" : 38,
             "down" : 40,
@@ -194,7 +194,7 @@ $(document).ready(function () {
                 console.warn("Aïe");
             }
         }
-    }
+    }*/
     
     /**
      * function checkVictory
@@ -260,6 +260,17 @@ $(document).ready(function () {
             $(this).addClass("hidden");
         });
         $("section[data-state='" + gameState + "']").removeClass("hidden");
+    }
+
+    /**
+     * function getRandNumber
+     * description : Returns a random number by entering a minimum and maximum value in parameters
+     * @param max int
+     * @param min int
+     * @returns {number}
+     */
+    function getRandNumber(max, min) {
+        return Math.floor((Math.random() * max) + min)
     }
 
     /**
