@@ -1,7 +1,8 @@
 $(document).ready(function () {
-    //TODO : Add a scoring system with pieces that appear, normal pieces increment the score by 1 and glitch pieces remove 1 point.
-    //TODO : Linking the portfolio to the game through Konami Code
-    //TODO : Correct the problem of poor game board display.
+    //TODO : Display the rules screen.
+    //TODO: Add more enemies.
+    //TODO : Linking the portfolio to the game through Konami Code ?
+    //TODO : Add a scoring system with coins that appear, normal coins increment the score by 1 and glitch coins remove 1 point. The game continues until the player has gone out the door. Either the player continues and takes the risk of falling on the enemy and his score will not be saved, or he goes out the door and his score will be saved.
     //TODO : Optimize the code.
 
     /**
@@ -32,8 +33,8 @@ $(document).ready(function () {
         };
         // Defines the enemy's position randomly
         var posEnemy = {
-            "randX" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).x, 1),
-            "randY" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).y, 1)
+            "x" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).x, 1),
+            "y" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).y, 1)
         };
         // Goal's position
         var posGoal = {
@@ -50,6 +51,7 @@ $(document).ready(function () {
         if (localStorage.getItem("goalPos") == null){
             // JSON file passed in string
             localStorage.setItem("goalPos", JSON.stringify(posGoal));
+            debugger;
         }
         // If the enemy has no basic position
         if (localStorage.getItem("enemyPos") == null){
@@ -66,25 +68,21 @@ $(document).ready(function () {
         // Displays the goal
         $(".gameDiv[data-x='" + posGoal.x + "'][data-y='" + posGoal.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/door.gif'>");
         //Displays the enemy
-        $(".gameDiv[data-x='" + posEnemy.randX + "'][data-y='" + posEnemy.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+        $(".gameDiv[data-x='" + posEnemy.x + "'][data-y='" + posEnemy.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
         // Moving the character
         $("body").on("keydown", function (e) {
             // Up key
             if (e.keyCode == 38) {
                 movePlayer("UP");
-                moveEnemy();
                 // Down key
             } else if (e.keyCode == 40) {
                 movePlayer("DOWN");
-                moveEnemy();
                 // Left key
             } else if (e.keyCode == 37) {
                 movePlayer("LEFT");
-                moveEnemy();
                 // Right key
             } else if (e.keyCode == 39) {
                 movePlayer("RIGHT");
-                moveEnemy();
             }
         });
     }
@@ -99,8 +97,8 @@ $(document).ready(function () {
             baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
             gameScreen = $("section[data-state='gameScreen']"),
             html = "<div style='width:" + (baseX * 42) + "px' class='gameContainer'>";
-        for (var y = 1; y <= baseX; y++) {
-            for (var x = 1; x <= baseY; x++) {
+        for (var y = 1; y <= baseY; y++) {
+            for (var x = 1; x <= baseX; x++) {
                 html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
             }
         }
@@ -171,36 +169,36 @@ $(document).ready(function () {
         if (getRandNumber(2, 1) == 1) {
             if (getRandNumber(2, 1) == 1) {
                 // Moves up
-                if ((currentEnemyPos.randY - 1) > 0) {
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("");
-                    currentEnemyPos.randY -= 1;
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                if ((currentEnemyPos.y - 1) > 0) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.y -= 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
             } else {
                 // Moves down
-                if ((currentEnemyPos.randY + 1) <= gameSize.y) {
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("");
-                    currentEnemyPos.randY += 1;
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                if ((currentEnemyPos.y + 1) <= gameSize.y) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.y += 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
             }
         } else {
             if (getRandNumber(2, 1) == 1) {
                 // Moves right
-                if ((currentEnemyPos.randX + 1) <= gameSize.x) {
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("");
-                    currentEnemyPos.randX += 1;
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                if ((currentEnemyPos.x + 1) <= gameSize.x) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.x += 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
             } else {
                 // Moves left
-                if ((currentEnemyPos.randX - 1) > 0) {
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("");
-                    currentEnemyPos.randX -= 1;
-                    $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                if ((currentEnemyPos.x - 1) > 0) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.x -= 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
             }
@@ -223,7 +221,7 @@ $(document).ready(function () {
      * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkDefeat(currentPlayerPos) {
-        if (currentPlayerPos.x == JSON.parse(localStorage.getItem("enemyPos")).randX && currentPlayerPos.y == JSON.parse(localStorage.getItem("enemyPos")).randY) {
+        if (currentPlayerPos.x == JSON.parse(localStorage.getItem("enemyPos")).x && currentPlayerPos.y == JSON.parse(localStorage.getItem("enemyPos")).y) {
             displayScreen("defeatScreen");
             returnHomeScreen(2500);
         }
