@@ -1,5 +1,4 @@
 body{
-    /*background: url("../imgs/dark-triangles.png") repeat;*/
     background-image:linear-gradient(60deg, #EC2121, #BD1A77);
     font-family: 'Poiret One', cursive;
     display: flex;
@@ -12,7 +11,7 @@ h1{
     font-family: 'Audiowide', cursive;
     /*color: #EC7D21;*/
     color: #B37BF7;
-    font-size: 40px;
+    font-size: 2.5rem;
 }
 
 .optionScreen{
@@ -50,26 +49,25 @@ h1{
 }
 
 .labelSizeOption{
-    font-size: 25px;
+    font-size: 1.563rem;
 }
 
 input{
     font-family: 'Poiret One', cursive;
-    font-size: 15px;
-    max-width: 35px;
+    font-size: 0.9375rem;
+    max-width: 2.188rem;
 }
 
 .startGame{
     font-family: 'Poiret One', cursive;
-    font-size: 15px;
+    font-size: 0.9375rem;
     height: auto;
     width: auto;
 }
 
 .startGame:hover{
     background-color: #800048;
-    border-radius: 5px;
-    /*color: #F59C52;*/
+    border-radius: 0.3125rem;
     color: #B37BF7;
 }
 
@@ -85,9 +83,9 @@ section[data-state="gameScreen"]{
 }
 
 .gameDiv{
-    height: 18px;
-    width: 18px;
-    border: 1px solid #7EABCE;
+    height: 2.5rem;
+    width: 2.5rem;
+    border: 0.0625rem solid #7EABCE;
 
 }
 
