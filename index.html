@@ -11,7 +11,7 @@
 
 <!--Options Screen-->
 <section class="optionScreen hidden alignLabel gradiantGreenOrange" data-state="optionScreen">
-    <h1>Options screen</h1>
+    <h1>Menu</h1>
     <label class="labelSizeOption" for="x">Number of cells on X axis :
         <input class="alignLabel" id="x" type="number" name="x" value="10" max="100">
     </label>
@@ -21,21 +21,33 @@
     </label>
     <br>
     <button class="startGame" data-action="startGame">Start game</button>
+    <button class="seeRules" data-action="seeRules">Rules</button>
+</section>
+
+<!--Rules screen-->
+<section class="rulesScreen hidden" data-state="rulesScreen">
+    <h1>Rules</h1>
+    <p>Use the arrows on your keyboard to move your hero, an enemy is present on the game board. <br>
+       Every time you move, the enemy moves randomly. <br>
+       The goal is to reach the exit gate without getting caught by the enemy.</p>
+    <small>Copyright Etienne Blanc-Coquand - 2017 - V1</small>
+    <button data-action="reset">Menu</button>
 </section>
 
 <!--Game Screen-->
 <section class="gameScreen hidden" data-state="gameScreen">
-    <h1>Game Screen</h1>
+    <h1>If you see this text it is because there is a bug:)</h1>
 </section>
 
 <!--Victory Screen-->
 <section class="victoryScreen hidden" data-state="victoryScreen">
-    <h1>Vous avez réussi à vous échapper</h1>
+    <h1>You have escaped the game, congratulations</h1>
 </section>
 
 <!--Defeat Screen-->
 <section class="defeatScreen hidden" data-state="defeatScreen">
-    <h1>Oh non...</h1>
+    <h1>Oh no...</h1>
+    <h1>Uncle Adolf's got you...</h1>
 </section>
 
 <!--jQuery Script and other JS Script-->

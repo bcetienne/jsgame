@@ -1,7 +1,12 @@
 $(document).ready(function () {
+    //TODO : Display the rules screen.
+    //TODO: Add more enemies.
+    //TODO : Linking the portfolio to the game through Konami Code ?
+    //TODO : Add a scoring system with coins that appear, normal coins increment the score by 1 and glitch coins remove 1 point. The game continues until the player has gone out the door. Either the player continues and takes the risk of falling on the enemy and his score will not be saved, or he goes out the door and his score will be saved.
+    //TODO : Optimize the code.
+
     /**
-     * function init
-     * description : Checks whether there is an already existing game state in local storage
+     * Checks whether there is an already existing game state in local storage
      */
     function init() {
         // If there is no value in the local storage then the options screen is displayed.
@@ -18,74 +23,92 @@ $(document).ready(function () {
     }
 
     /**
-     * function insertObjects
-     * description : Displays and determines the locations of game elements such as player, enemies, obstacles,...
+     * Displays and determines the locations of game elements such as player, enemies, obstacles,...
      */
     function insertObjects() {
+        // Player's basic position
+        var posPlayer = {
+            "x": 1,
+            "y": 1
+        };
+        // Defines the enemy's position randomly
+        var posEnemy = {
+            "x" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).x, 1),
+            "y" : getRandNumber(JSON.parse(localStorage.getItem("gameAxes")).y, 1)
+        };
+        // Goal's position
+        var posGoal = {
+            "x": JSON.parse(localStorage.getItem("gameAxes")).x,
+            "y": JSON.parse(localStorage.getItem("gameAxes")).y
+        };
+
         // If the player has no basic position
         if (localStorage.getItem("playerPos") == null){
-            // Player's basic position
-            var posPlayer = {
-                "x": 1,
-                "y": 1
-            };
             // JSON file passed in string
             localStorage.setItem("playerPos", JSON.stringify(posPlayer));
         }
         // If the goal has no basic position
         if (localStorage.getItem("goalPos") == null){
-            // Goal's position
-            var posGoal = {
-                "x": JSON.parse(localStorage.getItem("gameAxes")).x,
-                "y": JSON.parse(localStorage.getItem("gameAxes")).y
-            };
             // JSON file passed in string
             localStorage.setItem("goalPos", JSON.stringify(posGoal));
+            debugger;
         }
         // If the enemy has no basic position
         if (localStorage.getItem("enemyPos") == null){
-            // Defines the enemy's position randomly
-            var posEnemy = {
-                "randX" : Math.floor((Math.random() * JSON.parse(localStorage.getItem("gameAxes")).x) + 1),
-                "randY" : Math.floor((Math.random() * JSON.parse(localStorage.getItem("gameAxes")).y) + 1)
-            };
             // JSON file passed in string
             localStorage.setItem("enemyPos", JSON.stringify(posEnemy));
         }
-        var playerPos = JSON.parse(localStorage.getItem("playerPos"));
-        var goalPos = JSON.parse(localStorage.getItem("goalPos"));
+        // If the enemy appears on the hero
+        if (localStorage.getItem("enemyPos") == localStorage.getItem("playerPos")){
+            //JSON file passed in string
+            localStorage.setItem("enemyPos", JSON.stringify(posEnemy));
+        }
         // Displays the character
         $(".gameDiv[data-x='" + posPlayer.x + "'][data-y='" + posPlayer.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
         // Displays the goal
-        $(".gameDiv[data-x='" + posGoal.x + "'][data-y='" + posGoal.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/door.jpg'>");
+        $(".gameDiv[data-x='" + posGoal.x + "'][data-y='" + posGoal.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/door.gif'>");
         //Displays the enemy
-        $(".gameDiv[data-x='" + posEnemy.randX + "'][data-y='" + posEnemy.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+        $(".gameDiv[data-x='" + posEnemy.x + "'][data-y='" + posEnemy.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
         // Moving the character
         $("body").on("keydown", function (e) {
             // Up key
             if (e.keyCode == 38) {
                 movePlayer("UP");
-                moveEnemy();
-            // Down key
+                // Down key
             } else if (e.keyCode == 40) {
                 movePlayer("DOWN");
-                moveEnemy();
-            // Left key
+                // Left key
             } else if (e.keyCode == 37) {
                 movePlayer("LEFT");
-                moveEnemy();
-            // Right key
+                // Right key
             } else if (e.keyCode == 39) {
                 movePlayer("RIGHT");
-                moveEnemy();
             }
         });
     }
 
     /**
-     * function movePlayer
-     * description : Defines the direction in which the character will move
-     * @param direction string
+     * Generate the game and place the game elements
+     */
+    function generateGame() {
+        // Retrieve x and y values
+        // JSON parse transforms a JSON text back to object JSON
+        var baseX = JSON.parse(localStorage.getItem("gameAxes")).x,
+            baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
+            gameScreen = $("section[data-state='gameScreen']"),
+            html = "<div style='width:" + (baseX * 42) + "px' class='gameContainer'>";
+        for (var y = 1; y <= baseY; y++) {
+            for (var x = 1; x <= baseX; x++) {
+                html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
+            }
+        }
+        $(gameScreen).html(html);
+        insertObjects();
+    }
+
+    /**
+     * Defines the direction in which the character will move
+     * @param {String} direction - Direction in the form of string
      */
     function movePlayer(direction){
         var currentPlayerPos = JSON.parse(localStorage.getItem('playerPos')),
@@ -95,165 +118,118 @@ $(document).ready(function () {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.y -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
                 checkDefeat(currentPlayerPos);
+                checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
+                checkDefeat(currentPlayerPos);
             }
         } else if (direction === "DOWN") {
             if ((currentPlayerPos.y + 1) <= gameSize.y) {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.y += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
                 checkDefeat(currentPlayerPos);
+                checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
+                checkDefeat(currentPlayerPos);
             }
         } else if (direction === "LEFT") {
             if ((currentPlayerPos.x - 1) > 0) {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.x -= 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
                 checkDefeat(currentPlayerPos);
+                checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
+                checkDefeat(currentPlayerPos);
             }
         } else if (direction === "RIGHT") {
             if ((currentPlayerPos.x + 1) <= gameSize.x) {
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
                 currentPlayerPos.x += 1;
                 $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
                 checkDefeat(currentPlayerPos);
+                checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
+                checkDefeat(currentPlayerPos);
             }
         }
+        checkDefeat(currentPlayerPos);
+        moveEnemy();
+        checkDefeat(currentPlayerPos);
     }
 
     /**
-     * function moveEnemy
-     * description : Moves the enemy in a random direction
-     * @param direction
+     * Moves the enemy in random directions
      */
-    function moveEnemy(direction) {
-        var arrayDirection = {
-            "up" : 38,
-            "down" : 40,
-            "left" : 37,
-            "right" : 39
-        },
-            randomDirection = arrayDirection[Math.floor(Math.random() * arrayDirection. length)];
-
-        var currentEnemyPos = JSON.parse(localStorage.getItem('enemyPos')),
+    function moveEnemy() {
+        var currentEnemyPos = JSON.parse(localStorage.getItem("enemyPos")),
             gameSize = JSON.parse(localStorage.getItem('gameAxes'));
-        if (direction === "UP") {
-            if ((currentPlayerPos.y - 1) > 0) {
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
-                currentPlayerPos.y -= 1;
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
-                localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+
+        if (getRandNumber(2, 1) == 1) {
+            if (getRandNumber(2, 1) == 1) {
+                // Moves up
+                if ((currentEnemyPos.y - 1) > 0) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.y -= 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                    localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
+                }
             } else {
-                console.warn("Aïe");
+                // Moves down
+                if ((currentEnemyPos.y + 1) <= gameSize.y) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.y += 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                    localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
+                }
             }
-        } else if (direction === "DOWN") {
-            if ((currentPlayerPos.y + 1) <= gameSize.y) {
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
-                currentPlayerPos.y += 1;
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
-                localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
+        } else {
+            if (getRandNumber(2, 1) == 1) {
+                // Moves right
+                if ((currentEnemyPos.x + 1) <= gameSize.x) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.x += 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                    localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
+                }
             } else {
-                console.warn("Aïe");
-            }
-        } else if (direction === "LEFT") {
-            if ((currentPlayerPos.x - 1) > 0) {
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
-                currentPlayerPos.x -= 1;
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
-                localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
-            }
-        } else if (direction === "RIGHT") {
-            if ((currentPlayerPos.x + 1) <= gameSize.x) {
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("");
-                currentPlayerPos.x += 1;
-                $(".gameDiv[data-x='" + currentPlayerPos.x + "'][data-y='" + currentPlayerPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/mario-cape.gif'>");
-                checkVictory(currentPlayerPos);
-                localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
-            } else {
-                console.warn("Aïe");
+                // Moves left
+                if ((currentEnemyPos.x - 1) > 0) {
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("");
+                    currentEnemyPos.x -= 1;
+                    $(".gameDiv[data-x='" + currentEnemyPos.x + "'][data-y='" + currentEnemyPos.y + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
+                    localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
+                }
             }
         }
     }
-    
+
     /**
-     * function checkVictory
-     * description : Check if the player has reached the goal
-     * @param currentPlayerPos
+     * Check if the player has reached the goal
+     * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkVictory(currentPlayerPos) {
-        var delay = 2500;
         if (currentPlayerPos.x == JSON.parse(localStorage.getItem("goalPos")).x && currentPlayerPos.y == JSON.parse(localStorage.getItem("goalPos")).y) {
             displayScreen("victoryScreen");
-            // Returns to options screen after a while
-            setTimeout(function () {
-                localStorage.clear();
-                location.reload();
-            }, delay);
+            returnHomeScreen(2500);
         }
     }
 
     /**
-     * function checkDefeat
-     * description : Check if the player has arrived on the bad guy
-     * @param currentEnemyPos
+     * Check if the player has arrived on the bad guy
+     * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkDefeat(currentPlayerPos) {
-        var delay = 2500;
-        if (currentPlayerPos.x == JSON.parse(localStorage.getItem("enemyPos")).randX && currentPlayerPos.y == JSON.parse(localStorage.getItem("enemyPos")).randY) {
+        if (currentPlayerPos.x == JSON.parse(localStorage.getItem("enemyPos")).x && currentPlayerPos.y == JSON.parse(localStorage.getItem("enemyPos")).y) {
             displayScreen("defeatScreen");
-            // Returns to options screen after a while
-            setTimeout(function () {
-                localStorage.clear();
-                location.reload();
-            }, delay);
+            returnHomeScreen(2500);
         }
     }
-    
+
     /**
-     * function generateGame
-     * description :
-     */
-    function generateGame() {
-        // Retrieve x and y values
-        // JSON parse transforms a JSON text back to object JSON
-        var baseX = JSON.parse(localStorage.getItem("gameAxes")).x,
-            baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
-            gameScreen = $("section[data-state='gameScreen']"),
-            html = "<div style='width:" + (baseX * 20) + "px' class='gameContainer'>";
-        for (var y = 1; y <= baseX; y++) {
-            for (var x = 1; x <= baseY; x++) {
-                html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
-            }
-        }
-        $(gameScreen).html(html);
-        insertObjects();
-    }
-    
-    /**
-     * function displayScreen
-     * description : Changes the class of an element to display it or not
-     * @param gameState string
+     * Changes the class of an element to display it or not
+     * @param {String} gameState - Window's state
      */
     function displayScreen(gameState) {
         $.each($("section[data-state!='" + gameState + "']"), function (key, value) {
@@ -263,8 +239,35 @@ $(document).ready(function () {
     }
 
     /**
-     * anonymous function button startGame
-     * description : Retrieves the values of x and y by clicking on the startGame button and whether or not to start the game.
+     * Returns to the home screen after a set time by deleting the local storage.
+     * @param {Number} delay The time for the message to be displayed
+     */
+    function returnHomeScreen(delay) {
+        setTimeout(function () {
+            eraseLocalStorage();
+        }, delay);
+    }
+
+    /**
+     * Returns a random number by entering a minimum and maximum value in parameters
+     * @param {Number} max - The maximum of random numbers
+     * @param {Number} min - The minimum of random numbers
+     * @returns {number}
+     */
+    function getRandNumber(max, min) {
+        return Math.floor((Math.random() * max) + min)
+    }
+
+    /**
+     * Erase local storage and reloads the page
+     */
+    function eraseLocalStorage() {
+        localStorage.clear();
+        location.reload();
+    }
+
+    /**
+     * Retrieves the values of x and y by clicking on the startGame button and whether or not to start the game.
      */
     $("button[data-action='startGame']").on("click", function () {
         var baseX = $("input[name='x']").val(),
@@ -292,13 +295,10 @@ $(document).ready(function () {
     });
 
     /**
-     * anonymous function button reset
-     * description : Emptying local storage
+     * Emptying local storage
      */
     $("button[data-action='reset']").on("click", function () {
-        localStorage.clear();
-        location.reload();
+        eraseLocalStorage();
     });
-
     init();
 });
