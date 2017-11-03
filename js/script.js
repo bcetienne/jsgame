@@ -1,6 +1,8 @@
 $(document).ready(function () {
     //TODO : Add a scoring system with pieces that appear, normal pieces increment the score by 1 and glitch pieces remove 1 point.
+    //TODO : Linking the portfolio to the game through Konami Code
     //TODO : Correct the problem of poor game board display.
+    //TODO : Optimize the code.
 
     /**
      * Checks whether there is an already existing game state in local storage
@@ -71,15 +73,15 @@ $(document).ready(function () {
             if (e.keyCode == 38) {
                 movePlayer("UP");
                 moveEnemy();
-            // Down key
+                // Down key
             } else if (e.keyCode == 40) {
                 movePlayer("DOWN");
                 moveEnemy();
-            // Left key
+                // Left key
             } else if (e.keyCode == 37) {
                 movePlayer("LEFT");
                 moveEnemy();
-            // Right key
+                // Right key
             } else if (e.keyCode == 39) {
                 movePlayer("RIGHT");
                 moveEnemy();
@@ -96,7 +98,7 @@ $(document).ready(function () {
         var baseX = JSON.parse(localStorage.getItem("gameAxes")).x,
             baseY = JSON.parse(localStorage.getItem("gameAxes")).y,
             gameScreen = $("section[data-state='gameScreen']"),
-            html = "<div style='width:" + (baseX * 20) + "px' class='gameContainer'>";
+            html = "<div style='width:" + (baseX * 42) + "px' class='gameContainer'>";
         for (var y = 1; y <= baseX; y++) {
             for (var x = 1; x <= baseY; x++) {
                 html += "<div class='gameDiv' data-x='" + x + "' data-y='" + y + "'></div>";
@@ -122,8 +124,6 @@ $(document).ready(function () {
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
-            } else {
-                console.warn("Aïe");
             }
         } else if (direction === "DOWN") {
             if ((currentPlayerPos.y + 1) <= gameSize.y) {
@@ -134,8 +134,6 @@ $(document).ready(function () {
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
-            } else {
-                console.warn("Aïe");
             }
         } else if (direction === "LEFT") {
             if ((currentPlayerPos.x - 1) > 0) {
@@ -146,8 +144,6 @@ $(document).ready(function () {
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
-            } else {
-                console.warn("Aïe");
             }
         } else if (direction === "RIGHT") {
             if ((currentPlayerPos.x + 1) <= gameSize.x) {
@@ -158,8 +154,6 @@ $(document).ready(function () {
                 checkVictory(currentPlayerPos);
                 localStorage.setItem("playerPos", JSON.stringify(currentPlayerPos));
                 checkDefeat(currentPlayerPos);
-            } else {
-                console.warn("Aïe");
             }
         }
         checkDefeat(currentPlayerPos);
@@ -192,7 +186,7 @@ $(document).ready(function () {
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
             }
-            } else {
+        } else {
             if (getRandNumber(2, 1) == 1) {
                 // Moves right
                 if ((currentEnemyPos.randX + 1) <= gameSize.x) {
@@ -201,7 +195,7 @@ $(document).ready(function () {
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("<img style='width:100%; height:100%;' src='../imgs/adolf.gif'>");
                     localStorage.setItem("enemyPos", JSON.stringify(currentEnemyPos));
                 }
-        } else {
+            } else {
                 // Moves left
                 if ((currentEnemyPos.randX - 1) > 0) {
                     $(".gameDiv[data-x='" + currentEnemyPos.randX + "'][data-y='" + currentEnemyPos.randY + "']").html("");
@@ -212,19 +206,15 @@ $(document).ready(function () {
             }
         }
     }
-    
+
     /**
      * Check if the player has reached the goal
      * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkVictory(currentPlayerPos) {
-        var delay = 2500;
         if (currentPlayerPos.x == JSON.parse(localStorage.getItem("goalPos")).x && currentPlayerPos.y == JSON.parse(localStorage.getItem("goalPos")).y) {
             displayScreen("victoryScreen");
-            // Returns to options screen after a while
-            setTimeout(function () {
-                eraseLocalStorage();
-            }, delay);
+            returnHomeScreen(2500);
         }
     }
 
@@ -233,16 +223,12 @@ $(document).ready(function () {
      * @param {String} currentPlayerPos - Defines the player's position
      */
     function checkDefeat(currentPlayerPos) {
-        var delay = 2500;
         if (currentPlayerPos.x == JSON.parse(localStorage.getItem("enemyPos")).randX && currentPlayerPos.y == JSON.parse(localStorage.getItem("enemyPos")).randY) {
             displayScreen("defeatScreen");
-            // Returns to options screen after a while
-            setTimeout(function () {
-                eraseLocalStorage();
-            }, delay);
+            returnHomeScreen(2500);
         }
     }
-    
+
     /**
      * Changes the class of an element to display it or not
      * @param {String} gameState - Window's state
@@ -252,6 +238,16 @@ $(document).ready(function () {
             $(this).addClass("hidden");
         });
         $("section[data-state='" + gameState + "']").removeClass("hidden");
+    }
+
+    /**
+     * Returns to the home screen after a set time by deleting the local storage.
+     * @param {Number} delay The time for the message to be displayed
+     */
+    function returnHomeScreen(delay) {
+        setTimeout(function () {
+            eraseLocalStorage();
+        }, delay);
     }
 
     /**
@@ -306,6 +302,5 @@ $(document).ready(function () {
     $("button[data-action='reset']").on("click", function () {
         eraseLocalStorage();
     });
-
     init();
 });
